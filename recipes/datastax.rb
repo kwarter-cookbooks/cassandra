@@ -39,7 +39,3 @@ package "dsc12" do
   action :install
 end
 
-service "cassandra" do
-  supports :restart => true, :status => true
-  action [:enable, :start]
-end
