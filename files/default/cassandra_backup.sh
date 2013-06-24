@@ -13,15 +13,21 @@ BackupPath="/var/backups"
 Keystore="$1"
 AppDataDir="/var/lib/cassandra/data"
 
-find ${BackupPath}/* -atime +7 -exec rm {} \;
+find ${BackupPath}/*tar* -atime +7 -exec rm {} \;
+
+ ${AppBinPath}/nodetool snapshot ${Keystore}
 
 for cf in `ls ${AppDataDir}/${Keystore}/ | xargs -n 1 basename`;
   do 
-    LatestCopy=`ls -rt ${AppDataDir}/${Keystore}/${cf}/snapshots/ | tail -1`;
-	  BackupFileName="`hostname`.$Keystore.${cf}.$DateStamp";
-    sudo rsync -ar ${AppDataDir}/${Keystore}/${cf}/snapshots/${LatestCopy} ${BackupPath}/${BackupFileName};                      
-    sudo tar -czvf ${BackupPath}/${BackupFileName}.tar -C ${BackupPath} ${BackupFileName};
-    sudo gzip ${BackupPath}/${BackupFileName}.tar;
-    s3cmd put ${BackupPath}/${BackupFileName}.tar.gz s3://backups.kwarter.com/`hostname |cut -d"." -f2`;
-    rm -rf ${BackupPath}/${BackupFileName};
+    if [ -d ${AppDataDir}/${Keystore}/${cf}/snapshots]; then 
+      LatestCopy=`ls -rt ${AppDataDir}/${Keystore}/${cf}/snapshots/ | tail -1`;
+	    BackupFileName="`hostname`.$Keystore.${cf}.$DateStamp";
+      sudo rsync -ar ${AppDataDir}/${Keystore}/${cf}/snapshots/${LatestCopy} ${BackupPath}/${BackupFileName};                      
+      sudo tar -czvf ${BackupPath}/${BackupFileName}.tar -C ${BackupPath} ${BackupFileName};
+      sudo gzip ${BackupPath}/${BackupFileName}.tar;
+      s3cmd put ${BackupPath}/${BackupFileName}.tar.gz s3://backups.kwarter.com/`hostname |cut -d"." -f2`/;
+      rm -rf ${BackupPath}/${BackupFileName};
+    else
+    	echo "${AppDataDir}/${Keystore}/${cf}/snapshots does not exist";
+    fi
 done

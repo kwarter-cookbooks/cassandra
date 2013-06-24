@@ -21,14 +21,14 @@ cookbook_file "#{node[:cassandra][:cassandra_backup][:backup_path]}/cassandra_ba
   mode 0755
 end
 
-cron "Cassandra Nightly Backup" do
+cron "Cassandra Nightly Users Backup" do
 	minute "0"
 	hour "2"
   command "#{node[:cassandra][:cassandra_backup][:backup_path]}/cassandra_backup.sh users"
   action :create
 end
 
-cron "Cassandra Nightly Backup" do
+cron "Cassandra Nightly Events Backup" do
 	minute "0"
 	hour "2"
   command "#{node[:cassandra][:cassandra_backup][:backup_path]}/cassandra_backup.sh events"
