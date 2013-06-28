@@ -35,3 +35,4 @@ default[:cassandra] = {
   :concurrent_writes => 32,
   :snitch           => 'SimpleSnitch'
 }
+default[:cassandra][:cassandra_backup][:backup_path] = "/var/backups"
