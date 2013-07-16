@@ -16,8 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-cookbook_file "#{node[:cassandra][:cassandra_backup][:backup_path]}/cassandra_backup.sh" do
-  source "cassandra_backup.sh"
+template "#{node[:cassandra][:cassandra_backup][:backup_path]}/cassandra_backup.sh" do
+  source "cassandra_backup.sh.erb"
   mode 0755
 end
 

@@ -11,7 +11,7 @@ IsOK=0
 CmdStatus=""
 BackupPath="/var/backups"
 Keystore="$1"
-AppDataDir="/var/lib/cassandra/data"
+AppDataDir="<%= node.cassandra.data_root_dir %>"
 
 find ${BackupPath}/*tar* -atime +7 -exec rm {} \;
 
