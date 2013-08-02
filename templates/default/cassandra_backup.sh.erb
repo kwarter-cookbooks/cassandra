@@ -24,7 +24,7 @@ for cf in `ls ${AppDataDir}/${Keystore}/ | xargs -n 1 basename`;
 	    BackupFileName="`hostname`.$AppName.$Keystore.${cf}.$DateStamp";
       sudo rsync -ar ${AppDataDir}/${Keystore}/${cf}/snapshots/${LatestCopy} ${BackupPath}/${BackupFileName};                      
       sudo tar -czvf ${BackupPath}/${BackupFileName}.tar -C ${BackupPath} ${BackupFileName};
-      s3cmd put ${BackupPath}/${BackupFileName}.tar s3://backups.kwarter.com/`hostname |cut -d"." -f2`/;
+      s3cmd put ${BackupPath}/${BackupFileName}.tar s3://backups.kwarter.com/`hostname |cut -d"." -f2`/${AppName}/;
       rm -rf ${BackupPath}/${BackupFileName};
     else
     	echo "${AppDataDir}/${Keystore}/${cf}/snapshots does not exist";
