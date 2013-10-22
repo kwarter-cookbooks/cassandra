@@ -21,3 +21,7 @@ service "cassandra" do
   supports :restart => true, :status => true
   action [:enable, :start]
 end
+
+file "/var/run/cassandra.pid" do
+  mode "0644"
+end
