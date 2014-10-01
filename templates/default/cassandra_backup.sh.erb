@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Set variables 
+## Set variables
 AppName=cassandra
 TodayDate=`date +"%d/%b/%g %r"`
 DateStamp=`date +%Y%m%d%H%M`
@@ -13,16 +13,16 @@ BackupPath="/var/backups"
 Keystore="$1"
 AppDataDir="<%= node.cassandra.data_root_dir %>/data"
 
-find ${BackupPath}/*tar* -atime +7 -exec rm {} \;
+find ${BackupPath}/*tar* -atime +3 -exec rm {} \;
 
  ${AppBinPath}/nodetool snapshot ${Keystore}
 
 for cf in `ls ${AppDataDir}/${Keystore}/ | xargs -n 1 basename`;
-  do 
-    if [ -d ${AppDataDir}/${Keystore}/${cf}/snapshots ]; then 
+  do
+    if [ -d ${AppDataDir}/${Keystore}/${cf}/snapshots ]; then
       LatestCopy=`ls -rt ${AppDataDir}/${Keystore}/${cf}/snapshots/ | tail -1`;
 	    BackupFileName="`hostname`.$AppName.$Keystore.${cf}.$DateStamp";
-      sudo rsync -ar ${AppDataDir}/${Keystore}/${cf}/snapshots/${LatestCopy} ${BackupPath}/${BackupFileName};                      
+      sudo rsync -ar ${AppDataDir}/${Keystore}/${cf}/snapshots/${LatestCopy} ${BackupPath}/${BackupFileName};
       sudo tar -czvf ${BackupPath}/${BackupFileName}.tar -C ${BackupPath} ${BackupFileName};
       s3cmd put ${BackupPath}/${BackupFileName}.tar s3://backups.kwarter.com/`hostname |cut -d"." -f2`/${AppName}/;
       rm -rf ${BackupPath}/${BackupFileName};
