@@ -13,7 +13,7 @@ BackupPath="/var/backups"
 Keystore="$1"
 AppDataDir="<%= node.cassandra.data_root_dir %>/data"
 
-find ${BackupPath}/*tar* -atime +3 -exec rm {} \;
+find ${BackupPath}/*tar* -atime +1 -exec rm {} \;
 
  ${AppBinPath}/nodetool snapshot ${Keystore}
 
